@@ -1,0 +1,23 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "implementation of the File Manager using Node.js APIs",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelinyshka/node_tasks.git"
+  },
+  "keywords": [
+    "file-manager",
+    "rs-school"
+  ],
+  "author": "Adel Dubinnikova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adelinyshka/node_tasks/issues"
+  },
+  "homepage": "https://github.com/adelinyshka/node_tasks#readme"
+}
