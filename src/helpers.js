@@ -1,3 +1,5 @@
+import { env } from "process";
+
 const getUserNameFromCli = (cliArguments) => {
     let userName;
     if (cliArguments) {
@@ -12,4 +14,8 @@ const welcomeUser = (name) => {
     console.log(`Welcome to the File Manager, ${name}!`);
 }
 
-export { getUserNameFromCli, welcomeUser };
+const showUserPath = () => {
+    console.log(`You are currently in ${env.Home}`);
+}
+
+export { getUserNameFromCli, welcomeUser, showUserPath };
