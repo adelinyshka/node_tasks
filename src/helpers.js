@@ -1,3 +1,6 @@
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'process';
+import exit from './commandsFM/exit.js';
 
 const getUserNameFromCli = (cliArguments) => {
     let userName;
@@ -10,11 +13,27 @@ const getUserNameFromCli = (cliArguments) => {
 };
 
 const welcomeUser = (name) => {
-    console.log(`Welcome to the File Manager, ${name}!`);
+    console.log(`Welcome to the File Manager, ${name}!` + `\n`);
 };
 
 const showUserPath = (path) => {
-    console.log(`You are currently in ${path}`);
+    console.log(`You are currently in ${path}` + `\n`);
 };
 
-export { getUserNameFromCli, welcomeUser, showUserPath };
+const processUserCommands = () => {
+    const consoleLine = readline.createInterface({
+        input,
+        output
+    });
+
+    consoleLine.setPrompt(process.env.HOME + ` >>`);
+
+    consoleLine.on('line', (input) => {
+        let userInput = input.split(' ');
+        if (userInput[0].includes('.exit')) {
+            exit(getUserNameFromCli());
+        }
+    });
+};
+
+export { getUserNameFromCli, welcomeUser, showUserPath, processUserCommands };
