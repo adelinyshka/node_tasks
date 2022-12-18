@@ -1,13 +1,13 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'process';
-import exit from './commandsFM/exit.js';
+import doExit from './commandsFM/basicOperations/doExit.js';
 
 const getUserNameFromCli = (cliArguments) => {
     let userName;
     if (cliArguments) {
         userName = cliArguments.filter((i) => i.startsWith('--username')).join().slice(11);
     } else {
-        userName = 'Anoniymous';
+        userName = 'Anonymous';
     }
     return userName;
 };
@@ -31,7 +31,7 @@ const processUserCommands = () => {
     consoleLine.on('line', (input) => {
         let userInput = input.split(' ');
         if (userInput[0].includes('.exit')) {
-            exit(getUserNameFromCli());
+            doExit(getUserNameFromCli());
         }
     });
 };

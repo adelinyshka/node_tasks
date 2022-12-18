@@ -1,4 +1,4 @@
-import { getUserNameFromCli, showUserPath, welcomeUser, processUserCommands } from './src/helpers.js';
+import { getUserNameFromCli, showUserPath, welcomeUser, processUserCommands } from './helpers.js';
 import { argv } from 'process';
 import { env } from 'process';
 
