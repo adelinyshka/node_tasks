@@ -1,14 +1,7 @@
 import { stat } from 'node:fs/promises';
 import { join, isAbsolute } from 'node:path';
 import { fmController } from './controllers/FMController.js';
-
-function getFileName(uconsoleLine) {
-    return fileUconsoleLineToPath(uconsoleLine);
-}
-
-const showUserPath = (path) => {
-    console.log(`You are currently in ${path}`);
-};
+import { constants } from "fs";
 
 export class InputError extends Error { }
 export class OperationError extends Error { }
@@ -73,9 +66,7 @@ const getAbsolutePath = async (string, type) => {
 
 export {
     handleErrors,
-    getFileName,
     getArrayOfArguments,
     getAbsolutePath,
     createPath,
-    showUserPath,
 };

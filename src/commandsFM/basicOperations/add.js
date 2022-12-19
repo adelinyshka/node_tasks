@@ -1,14 +1,15 @@
 import { createWriteStream } from 'fs';
 import { getArrayOfArguments, createPath, handleErrors } from './../../helpers.js';
 
-export const add = async (inputStr) => {
+export const add = async (stringWithArguments) => {
   try {
-    const [ arg1 ] = getArrayOfArguments(inputStr, 1);
+    const [arg1] = getArrayOfArguments(stringWithArguments, 1);
     const filePath = await createPath(arg1);
     const writeStream = createWriteStream(filePath);
+
     writeStream.end();
-    process.stdout.write(`File ${filePath} successfully created!`);
-  } catch(err) {
+    console.log('Success');
+  } catch (err) {
     handleErrors(err);
   }
 };

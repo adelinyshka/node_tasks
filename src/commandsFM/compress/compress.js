@@ -1,22 +1,20 @@
-import { createReadStream, createWriteStream } from 'fs';
-import { createBrotliCompress } from 'zlib';
-import { getArrayOfArguments, createPath, getAbsolutePath, handleErrors } from './../../helpers.js';
+import { createReadStream, createWriteStream } from "fs";
+import { createBrotliCompress } from "zlib";
+import { getAbsolutePath, handleErrors, } from './../../helpers.js';
 
-export const compress = async (argsStr) => {
+export const compress = async (stringWithArguments) => {
   try {
-    const [ arg1, arg2 ] = getArrayOfArguments(argsStr, 2);
-    const fromPath = await getAbsolutePath(arg1, 'file');
-    const toPath = createPath(arg2);
-    
-    const readStream = createReadStream(fromPath);
-    const brotli = createBrotliCompress();
-    const writeStream = createWriteStream(toPath);
-
-    const stream = readStream.pipe(brotli).pipe(writeStream);
+    const [arg1, arg2] = getArrayOfArguments(stringWithArguments, 2);
+    const from = await getAbsolutePath(arg1, 'file');
+    const to = createPath(arg2);
+    const rs = createReadStream(from);
+    const brotliCompress = createBrotliCompress();
+    const ws = createWriteStream(to);
+    const stream = rs.pipe(brotliCompress).pipe(ws);
 
     await new Promise((res, rej) => {
       stream.on('finish', () => {
-        console.log('Brolti compression done.');
+        console.log('Compression successful.');
         res();
       });
       stream.on('error', (err) => {
@@ -24,7 +22,7 @@ export const compress = async (argsStr) => {
       });
     });
 
-  } catch(err) {
+  } catch (err) {
     handleErrors(err);
   }
 };

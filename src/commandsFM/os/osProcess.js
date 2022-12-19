@@ -1,9 +1,9 @@
-import { osController} from '../../controllers/OsController.js'
+import { osController } from '../../controllers/OsController.js';
 import { getArrayOfArguments, handleErrors, InputError } from '../../helpers.js';
 
-export const osProcess = async (argsStr) => {
+export const osProcess = async (stringWithArguments) => {
   try {
-    const [ arg1 ] = getArrayOfArguments(argsStr, 1);
+    const [arg1] = getArrayOfArguments(stringWithArguments, 1);
     if (!arg1.startsWith('--')) {
       throw new InputError(`Invalid input`);
     }
@@ -14,9 +14,9 @@ export const osProcess = async (argsStr) => {
     if (osOperation === undefined) {
       throw new InputError('Invalid input');
     }
-    await osOperation(argsStr);
+    await osOperation(stringWithArguments);
 
-  } catch(err) {
+  } catch (err) {
     handleErrors(err);
   }
 };

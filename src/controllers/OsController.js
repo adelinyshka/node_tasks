@@ -2,16 +2,16 @@ import { EOL, cpus, homedir, userInfo, arch } from 'os';
 import { stdout } from 'process';
 
 class OsController {
-  constructor() {}
+  constructor() { }
 
   eol() {
     const eolStr = JSON.stringify(EOL);
     stdout.write(eolStr);
   }
-  
+
   cpus() {
     const cpusArr = cpus();
-    console.log(`Overall amount of cpus: ${cpusArr.length}`);
+    console.log(cpusArr.length);
     for (const cpuObj of cpusArr) {
       console.log(cpuObj.model);
     }
@@ -19,16 +19,16 @@ class OsController {
 
   homedir() {
     const homeDirStr = homedir();
-    console.log(`Home Directory is: ${homeDirStr}`);
+    console.log(homeDirStr);
   }
 
-  username () {
+  username() {
     const systemUserName = userInfo().username;
-    console.log(`System Username is: ${systemUserName}`);
+    console.log(systemUserName);
   }
 
-  architecture () {
-    console.log(`Your CPU architecture is: ${arch()}`);
+  architecture() {
+    console.log(arch);
   }
 }
 
