@@ -1,38 +1,16 @@
 import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output, cwd } from 'node:process';
+import { stdin as input, stdout as output } from 'node:process';
+import { stat } from 'node:fs/promises';
+import { join, isAbsolute } from 'node:path';
 import doExit from './commandsFM/basicOperations/doExit.js';
-import up from './commandsFM/nwd/up.js';
-import ls from './commandsFM/nwd/ls.js';
-import cd from './commandsFM/nwd/cd.js';
-import { access, stat } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
+import { fmController } from './controllers/FMController.js';
 
-async function isPathExists(path) {
-    try {
-        await access(path);
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
-
-async function isExists(path) {
-    try {
-        path = resolve(path);
-        const link = await stat(path);
-        return link.isExists();
-    } catch (error) {
-        return false;
-    }
-}
-
-function getFileName(url) {
-    return fileURLToPath(url);
+function getFileName(uconsoleLine) {
+    return fileUconsoleLineToPath(uconsoleLine);
 }
 
 const showUserPath = () => {
-    console.log(`\n` + `You are currently in ${cwd()}` + `\n`);
+    console.log(`\n` + `You are currently in ${process.cwd()}` + `\n`);
 };
 
 export class InputError extends Error { }
@@ -48,60 +26,127 @@ const handleErrors = (err) => {
 
 const getArrayOfArguments = (argString, argNum) => {
     if (argString.length === 0) {
-      if (argNum === 0) {
-        return '';
-      } else {
-        throw new InputError(
-         `Invalid input`
-        );
-      }
+        if (argNum === 0) {
+            return '';
+        } else {
+            throw new InputError(
+                `Invalid input`
+            );
+        }
     }
-    
+
     const arrayOfArguments = argString.split(' ');
     if (arrayOfArguments.length !== argNum) {
-      throw new InputError(
-        `Invalid input`
-      );
+        throw new InputError(
+            `Invalid input`
+        );
     } else {
-      return arrayOfArguments;
+        return arrayOfArguments;
     }
-  };
-
-const processUserCommands = (consoleArgs) => {
-    const consoleLine = readline.createInterface({ input, output });
-    let userDirectory = null;
-    let name = consoleArgs.slice(consoleArgs.length - 1).join('').split('--username=');
-    const userName = name[1];
-
-    consoleLine.output.write('\n' + `Welcome to the File Manager, ${userName}!` + '\n');
-    showUserPath();
-
-    consoleLine.setPrompt(process.env.HOME + ` >> `);
-    consoleLine.prompt();
-
-    consoleLine.on('SIGINT', () => {
-        doExit(userName);
-    });
-
-    consoleLine.on('line', (command) => {
-        let userInput = command.split(' ');
-        userDirectory = process.env.USERPROFILE;
-
-        if (userInput[0].includes('.exit')) {
-            doExit(userName);
-        }
-        else if (userInput[0].includes('up')) {
-            let i = up();
-            userDirectory = i;
-        }
-        else if (userInput[0].includes('ls')) {
-            ls();
-        } 
-        else if (userInput[0].includes('cd')) {
-            let i = cd(userDirectory, command);
-            userDirectory = i;
-        }
-    });
 };
 
-export { showUserPath, processUserCommands, handleErrors, isPathExists, isExists, getFileName, getArrayOfArguments };
+const createPath = (path) => {
+    try {
+        if (isAbsolute(path)) {
+            return path;
+        } else {
+            const userDirectory = fmController.getUserDirectory();
+            const readyPath = join(userDirectory, path);
+            return readyPath;
+        }
+    } catch (err) {
+        throw new InputError(`Invalid input`);
+    }
+};
+
+const getAbsolutePath = async (string, type) => {
+    try {
+        const path = createPath(string);
+        const chekers = async (path, type) => {
+            const check = await stat(path);
+            if (type === 'file' && !check.isFile()) {
+                throw new InputError(`Invalid input`);
+            }
+            if (type === 'folder' && !check.isFolder()) {
+                throw new InputError(`Invalid input! Not a folder.`);
+            }
+        };
+        await chekers(path, type);
+        return path;
+    } catch (err) {
+        throw new InputError(`Invalid input`);
+    }
+};
+
+const processUserCommands = async () => {
+    try {
+        const getUserName = (stringWithArguments) => {
+            let name = stringWithArguments.slice(stringWithArguments.length - 1).join('').split('--username=');
+            const userName = name[1];
+            return userName;
+        };
+        const userName = getUserName(process.argv);
+
+        console.log(`Welcome to the File Manager, ${userName}! \n`);
+
+        const consoleLine = readline.createInterface({ input, output });
+
+        consoleLine.on('.exit', () => {
+            doExit(userName)
+        });
+        consoleLine.on('SIGINT', () => {
+            doExit(userName)
+        });
+
+        const handleUserCommand = async (command) => {
+            try {
+                const splitInput = (command) => {
+                    const spaceIndex = command.indexOf(' ');
+                    if (spaceIndex > 0) {
+                        const spaceIndex = command.indexOf(' ');
+                        const operationName = command.slice(0, spaceIndex);
+                        const argsStr = command.slice(spaceIndex + 1, command.length);
+                        return [operationName, argsStr];
+                    } else {
+                        return [command, ''];
+                    }
+                };
+                const [operationName, argsStr] = splitInput(command);
+                const operation = fmController[operationName];
+                if (operation === undefined) {
+                    throw new InputError('Invalid input');
+                }
+                await operation(argsStr);
+            } catch (err) {
+                handleErrors(err);
+            }
+        };
+
+        const ask = async () => {
+            output.write(`\nYou are currently in ${fmController.getUserDirectory()} \n`);
+            consoleLine.question('', async (command) => {
+                if (command != '.exit') {
+                    await handleUserCommand(command);
+                    await ask();
+                }
+                else {
+                    consoleLine.close();
+                }
+            });
+        };
+        await ask();
+
+    } catch (err) {
+        handleErrors(err);
+    }
+};
+
+export {
+    showUserPath,
+    handleErrors,
+    getFileName,
+    getArrayOfArguments,
+    getAbsolutePath,
+    createPath,
+    processUserCommands,
+};

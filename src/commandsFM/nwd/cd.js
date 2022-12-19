@@ -1,11 +1,12 @@
-import { chdir } from 'node:process'
-import { showUserPath, handleErrors } from '../../helpers.js'
+import { fmController } from '../../controllers/FMController.js';
+import { getArrayOfArguments, handleErrors, getAbsolutePath } from '../../helpers.js';
 
-export default async function cd([path]) {
+export const cd = async (stringWithArguments) => {
   try {
-    chdir(path)
-    showUserPath()
+    const [firstArg] = getArrayOfArguments(stringWithArguments, 1);
+    const path = await getAbsolutePath(firstArg);
+    fmController.setUserDirectory(path);
   } catch (err) {
-    handleErrors(err)
+    handleErrors(err);
   }
-}
+};

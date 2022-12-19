@@ -1,7 +1,7 @@
-import { processUserCommands, showUserPath } from './helpers.js';
+import { processUserCommands } from './helpers.js';
 
 function startFM() {
-  processUserCommands(process.argv);
+  processUserCommands();
 }
 
 startFM();

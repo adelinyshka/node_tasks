@@ -1,10 +1,15 @@
-import { showUserPath } from "../../helpers.js";
+import { parse } from 'node:path';
+import { fmController } from '../../controllers/FMController.js';
+import { getArrayOfArguments, handleErrors } from '../../helpers.js';
 
-export default function up() {
+export const up = async (stringWithArguments) => {
     try {
-        process.chdir('..');
-        showUserPath();
-    } catch (error) {
-        handleErrors(error)
+        getArrayOfArguments(stringWithArguments, 0);
+        const userDirectory = fmController.getUserDirectory();
+        const parsed = parse(userDirectory);
+        const newDirectory = parsed.dir;
+        fmController.setUserDirectory(newDirectory);
+    } catch (err) {
+        handleErrors(err);
     }
 };

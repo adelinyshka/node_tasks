@@ -1,12 +1,12 @@
-import { readdir, } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { cwd } from 'node:process';
-import { showUserPath, handleErrors } from '../../helpers.js';
+import { readdir } from 'node:fs/promises';
+import { fmController } from '../../controllers/FMController.js';
+import { getArrayOfArguments, handleErrors } from '../../helpers.js';
 
-export default async function ls() {
+export const ls = async (stringWithArguments) => {
     try {
-        const currentDirectory = resolve(cwd());
-        const data = await readdir(currentDirectory, {
+        getArrayOfArguments(stringWithArguments, 0);
+        const userDirectory = fmController.getUserDirectory();
+        const data = await readdir(userDirectory, {
             withFileTypes: true,
         });
         console.table(data);
@@ -14,4 +14,4 @@ export default async function ls() {
     } catch (err) {
         handleErrors(err);
     }
-}
+};
