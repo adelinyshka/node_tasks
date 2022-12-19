@@ -1,39 +1,41 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'process';
 import doExit from './commandsFM/basicOperations/doExit.js';
+import up from './commandsFM/nwd/up.js';
+import { cwd } from 'node:process';
 
-const getUserNameFromCli = (cliArguments) => {
-    let userName;
-    if (cliArguments) {
-        userName = cliArguments.filter((i) => i.startsWith('--username')).join().slice(11);
-    } else {
-        userName = 'Anonymous';
-    }
-    return userName;
+const showUserPath = () => {
+    console.log(`\n` + `You are currently in ${cwd()}` + `\n`);
 };
 
-const welcomeUser = (name) => {
-    console.log(`Welcome to the File Manager, ${name}!` + `\n`);
-};
+const processUserCommands = (consoleArgs) => {
+    const consoleLine = readline.createInterface({ input, output });
+    let userDirectory = null;
+    let name = consoleArgs.slice(consoleArgs.length - 1).join('').split('--username=');
+    const userName = name[1];
 
-const showUserPath = (path) => {
-    console.log(`You are currently in ${path}` + `\n`);
-};
+    consoleLine.output.write('\n' + `Welcome to the File Manager, ${userName}!` + '\n');
+    showUserPath();
 
-const processUserCommands = () => {
-    const consoleLine = readline.createInterface({
-        input,
-        output
+    consoleLine.setPrompt(process.env.HOME + ` >> `);
+    consoleLine.prompt();
+
+    consoleLine.on('SIGINT', () => {
+        doExit(userName);
     });
-
-    consoleLine.setPrompt(process.env.HOME + ` >>`);
 
     consoleLine.on('line', (input) => {
         let userInput = input.split(' ');
+        userDirectory = process.env.USERPROFILE;
+
         if (userInput[0].includes('.exit')) {
-            doExit(getUserNameFromCli());
+            doExit(userName);
+        }
+        else if (userInput[0].includes('up')) {
+            let i = up();
+            userDirectory = i;
         }
     });
 };
 
-export { getUserNameFromCli, welcomeUser, showUserPath, processUserCommands };
+export { showUserPath, processUserCommands };

@@ -4,7 +4,7 @@
   "description": "implementation of the File Manager using Node.js APIs",
   "type": "module",
   "scripts": {
-    "start": "node src/app.js -- --username=mhgkjhfg",
+    "start": "node ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

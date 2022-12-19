@@ -1,11 +1,7 @@
-import { getUserNameFromCli, showUserPath, welcomeUser, processUserCommands } from './helpers.js';
-import { argv } from 'process';
-import { env } from 'process';
+import { processUserCommands, showUserPath } from './helpers.js';
 
 function startFM() {
-  welcomeUser(getUserNameFromCli(argv));
-  showUserPath(env.Home);
-  processUserCommands();
+  processUserCommands(process.argv);
 }
 
 startFM();
