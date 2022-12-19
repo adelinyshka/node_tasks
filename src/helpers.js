@@ -9,10 +9,6 @@ function getFileName(uconsoleLine) {
     return fileUconsoleLineToPath(uconsoleLine);
 }
 
-const showUserPath = () => {
-    console.log(`\n` + `You are currently in ${process.cwd()}` + `\n`);
-};
-
 export class InputError extends Error { }
 export class OperationError extends Error { }
 

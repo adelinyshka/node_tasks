@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import { fmController } from '../../controllers/FMController.js';
-import { getArrayOfArguments, handleErrors } from '../../helpers.js';
+import { getArrayOfArguments, handleErrors, } from '../../helpers.js';
 
 export const ls = async (stringWithArguments) => {
     try {
@@ -10,7 +10,6 @@ export const ls = async (stringWithArguments) => {
             withFileTypes: true,
         });
         console.table(data);
-        showUserPath();
     } catch (err) {
         handleErrors(err);
     }
