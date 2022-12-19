@@ -5,6 +5,6 @@ export default function up() {
         process.chdir('..');
         showUserPath();
     } catch (error) {
-        console.error('Operation failed' + '\n');
+        handleErrors(error)
     }
 };
