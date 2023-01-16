@@ -1,0 +1,24 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "crud api task development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelinyshka/node_tasks.git"
+  },
+  "keywords": [
+    "crud",
+    "js",
+    "node"
+  ],
+  "author": "Adel Dubinnikova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adelinyshka/node_tasks/issues"
+  },
+  "homepage": "https://github.com/adelinyshka/node_tasks#readme"
+}
